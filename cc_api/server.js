@@ -1,5 +1,7 @@
 const express = require('express');
 const dotenv = require('dotenv');
+dotenv.config(); // ⚠️ Muss ganz oben stehen!
+
 const { sequelize } = require('./models');
 
 const authRoutes = require('./routes/authRoutes');
@@ -9,9 +11,7 @@ const medicationRoutes = require('./routes/medicationRoutes');
 const notificationRoutes = require('./routes/notificationRoutes');
 const assignmentRoutes = require('./routes/assignmentRoutes');
 
-dotenv.config();
 const app = express();
-
 app.use(express.json());
 
 // Routen-Mounting
@@ -22,12 +22,22 @@ app.use('/medications', medicationRoutes);
 app.use('/notifications', notificationRoutes);
 app.use('/caregivers', assignmentRoutes);
 
-// Server-Start & DB-Sync
+// Port & Mock-Modus prüfen
 const PORT = process.env.PORT || 3000;
-sequelize.sync({ force: true }).then(() => {
-    console.log('✅ Datenbank synchronisiert');
+const isMock = process.env.USE_MOCK === 'true';
 
+if (isMock) {
+    console.log('🚫 MOCK-MODUS AKTIV – keine echte DB-Verbindung');
     app.listen(PORT, () => {
-        console.log(`🚀 CareConnect API läuft auf http://localhost:${PORT}`);
+        console.log(`🚀 CareConnect API läuft im MOCK-Modus auf http://localhost:${PORT}`);
     });
-});
+} else {
+    sequelize.sync({ force: true }).then(() => {
+        console.log('✅ Datenbank synchronisiert');
+        app.listen(PORT, () => {
+            console.log(`🚀 CareConnect API läuft auf http://localhost:${PORT}`);
+        });
+    }).catch((err) => {
+        console.error('❌ Fehler bei DB-Verbindung:', err);
+    });
+}
