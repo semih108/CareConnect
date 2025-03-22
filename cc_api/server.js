@@ -1,22 +1,33 @@
 const express = require('express');
-const app = express();
-const port = 3000;
+const dotenv = require('dotenv');
+const { sequelize } = require('./models');
 
-// Middleware to parse JSON request bodies
+const authRoutes = require('./routes/authRoutes');
+const userRoutes = require('./routes/userRoutes');
+const appointmentRoutes = require('./routes/appointmentRoutes');
+const medicationRoutes = require('./routes/medicationRoutes');
+const notificationRoutes = require('./routes/notificationRoutes');
+const assignmentRoutes = require('./routes/assignmentRoutes');
+
+dotenv.config();
+const app = express();
+
 app.use(express.json());
 
-// Basic test route
-app.get('/', (req, res) => {
-    res.send('Hello from CareConnect API!');
-});
+// Routen-Mounting
+app.use('/auth', authRoutes);
+app.use('/users', userRoutes);
+app.use('/appointments', appointmentRoutes);
+app.use('/medications', medicationRoutes);
+app.use('/notifications', notificationRoutes);
+app.use('/caregivers', assignmentRoutes);
 
-// Example POST route
-app.post('/data', (req, res) => {
-    console.log('Received:', req.body);
-    res.json({ status: 'OK', received: req.body });
-});
+// Server-Start & DB-Sync
+const PORT = process.env.PORT || 3000;
+sequelize.sync({ force: true }).then(() => {
+    console.log('✅ Datenbank synchronisiert');
 
-// Start server
-app.listen(port, () => {
-    console.log(`CareConnect API listening at http://localhost:${port}`);
+    app.listen(PORT, () => {
+        console.log(`🚀 CareConnect API läuft auf http://localhost:${PORT}`);
+    });
 });
