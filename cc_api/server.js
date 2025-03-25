@@ -28,6 +28,11 @@ const isMock = process.env.USE_MOCK === 'true';
 
 if (isMock) {
     console.log('🚫 MOCK-MODUS AKTIV – keine echte DB-Verbindung');
+
+    const mockData = require('./mockData');
+    global.mockMedications = mockData.mockMedications;
+
+
     app.listen(PORT, () => {
         console.log(`🚀 CareConnect API läuft im MOCK-Modus auf http://localhost:${PORT}`);
     });
