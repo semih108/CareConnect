@@ -1,6 +1,7 @@
 const { User } = require('../models');
 const bcrypt = require('bcryptjs');
 const generateToken = require('../utils/token');
+const authenticate = require('../middleware/authenticate');
 
 exports.loginUser = async (req, res) => {
     const { email, password } = req.body;
@@ -59,9 +60,13 @@ exports.registerUser = async (req, res) => {
             role
         });
 
+        // Token für automatisches Login nach Registrierung
+        const token = generateToken(user);
+
         // Erfolgsmeldung zurückgeben
         res.status(201).json({
             message: 'Benutzer erfolgreich registriert',
+            token,
             user: {
                 id: user.id,
                 name: user.name,
@@ -76,8 +81,13 @@ exports.registerUser = async (req, res) => {
     }
 };
 
-
 exports.logoutUser = (req, res) => {
-    // Kein echtes Logout nötig bei JWT, aber hier für API-Vollständigkeit
+    // Token zur Blacklist hinzufügen
+    const authHeader = req.headers.authorization;
+    if (authHeader && authHeader.startsWith('Bearer ')) {
+        const token = authHeader.split(' ')[1];
+        authenticate.revokeToken(token);
+    }
+
     res.status(200).json({ message: 'Logout erfolgreich' });
 };
