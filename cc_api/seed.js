@@ -1,3 +1,9 @@
+require('dotenv').config();
+const path = require('path');
+const { mockUsers } = require(path.resolve(__dirname, './mockDB'));
+
+
+
 const { sequelize, User, Appointment, Medication, Notification, Assignment } = require('./models');
 const bcrypt = require('bcryptjs');
 
@@ -17,6 +23,7 @@ async function seed() {
     await Notification.create({ user_id: patient.id, text: 'Erinnerung: Termin morgen um 09:00 Uhr' });
     await Assignment.create({ caregiver_id: caregiver.id, patient_id: patient.id });
 
+    console.log('📦 MOCK USERS AM ENDE:', mockUsers);
     console.log('✅ Dummy-Daten erfolgreich eingefügt');
     process.exit();
 }

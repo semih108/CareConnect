@@ -3,6 +3,10 @@ const bcrypt = require('bcryptjs');
 const generateToken = require('../utils/token');
 
 exports.loginUser = async (req, res) => {
+    console.log('🚀 Login aufgerufen mit:', req.body);
+    const all = await User.findAll();
+    console.log('📋 Aktuelle mockUsers:', all);
+
     const { email, password } = req.body;
 
     try {

@@ -1,10 +1,12 @@
 const useMock = process.env.USE_MOCK === 'true';
+const path = require('path');
+const { mockUsers } = require(path.resolve(__dirname, '../mockDB'));
+
 
 if (useMock) {
     console.log('⚠️ MOCK-MODUS AKTIV');
 
-    // 💾 Speicher für Benutzer im RAM
-    let mockUsers = [];
+    const { mockUsers } = require('../mockDB'); // << zentrale User-Liste
 
     const User = {
         async create(data) {
