@@ -2,16 +2,16 @@ FROM node:16-alpine
 
 WORKDIR /app
 
-# Kopieren Sie zuerst nur package.json und package-lock.json
+# Package Files für Dependencies
 COPY package*.json ./
 
 # Abhängigkeiten installieren
 RUN npm ci --only=production
 
-# Dann kopieren Sie den Rest des Codes
+# Rest des Codes
 COPY . .
 
-# Debug-Ausgabe (optional)
+# Debug-Ausgabe
 RUN ls -la
 
 EXPOSE 4000
