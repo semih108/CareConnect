@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: careconnect-ingress
+  namespace: careconnect
+  annotations:
+    kubernetes.io/ingress.class: azure/application-gateway
+    appgw.ingress.kubernetes.io/ssl-redirect: "true"
+spec:
+  rules:
+    - host: api.careconnect.laendletech.at
+      http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: careconnect-api
+                port:
+                  number: 80
+  tls:
+    - hosts:
+        - api.careconnect.laendletech.at
+      secretName: tls-secret

@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const dotenv = require('dotenv');
 dotenv.config(); // ⚠️ Muss ganz oben stehen!
 
@@ -13,6 +14,7 @@ const assignmentRoutes = require('./routes/assignmentRoutes');
 
 const app = express();
 app.use(express.json());
+app.use(cors());
 
 // Routen-Mounting
 app.use('/auth', authRoutes);
@@ -28,6 +30,13 @@ const isMock = process.env.USE_MOCK === 'true';
 
 if (isMock) {
     console.log('🚫 MOCK-MODUS AKTIV – keine echte DB-Verbindung');
+
+    const mockData = require('./mockData');
+    global.mockMedications = mockData.mockMedications;
+    global.mockNotifications = mockData.mockNotifications;
+    global.mockAppointments = mockData.mockAppointments;
+
+
     app.listen(PORT, () => {
         console.log(`🚀 CareConnect API läuft im MOCK-Modus auf http://localhost:${PORT}`);
     });
