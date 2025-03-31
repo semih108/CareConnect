@@ -33,6 +33,8 @@ if (isMock) {
 
     const mockData = require('./mockData');
     global.mockMedications = mockData.mockMedications;
+    global.mockNotifications = mockData.mockNotifications;
+    global.mockAppointments = mockData.mockAppointments;
 
 
     app.listen(PORT, () => {
