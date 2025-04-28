@@ -117,3 +117,40 @@ besser kompatibel mit react/expo - alles java/typescript, leicht erweiterbar dur
 - **Autor:** Reis, Gökcen, Sönmez
 - **Datum:** 08.03.2025
 - **Betroffene Komponenten:** Backend, API
+
+# ADR 006: n8n als Technologie für automatisierte Chatantworten und diverse Prozesse
+
+- **Datum:** 2025-04-22
+- **Status:** Angenommen
+- **Autoren:** Semih Sönmez, Metin Gökcen, Niklas Reis
+
+## 1. Kontext
+Im CareConnect-Projekt sollen wiederkehrende Abläufe – etwa automatisierte Chat-Antworten an Angehörige, Benachrichtigungen bei kritischen Pflegeereignissen oder tägliche Zusammenfassungen – ohne manuellen Eingriff ausgeführt werden. Zudem benötigen wir eine Plattform, die sich leicht in unsere bestehende Infrastruktur (React‑Frontend, Node.js‑API, PostgreSQL, Docker‑Container) einfügt und visuelle Workflow-Definitionen erlaubt.
+
+## 2. Entscheidung
+Wir entscheiden uns für den Einsatz von n8n als zentrale Automatisierungs- und Workflow-Orchestrierungs-Plattform.
+
+## 3. Begründung
+- **Open Source & Self‑Hosting:** n8n ist unter der fair‑code Lizenz verfügbar und kann vollständig in unserer Azure‑Cloud oder On‑Premise innerhalb unserer DSGVO-konformen Umgebung betrieben werden.
+- **Visueller Workflow Builder:** Ermöglicht es auch Nicht‑Entwicklern, Abläufe per Drag‑and‑Drop zu definieren und zu warten, wodurch der Betrieb und die Pflege automatischer Prozesse entlastet werden.
+- **Reiche Integrationen:** n8n bietet über 200 vorgefertigte Integrationen (z. B. HTTP-Requests, Slack, E‑Mail, Datenbank) und lässt sich mithilfe eigener JavaScript‑Nodes beliebig erweitern.
+- **Container‑Ready:** Läuft als Docker‑Container und fügt sich nahtlos in unsere bestehende Container‑Plattform ein; Skalierung über Kubernetes oder Docker‑Compose ist jederzeit möglich.
+- **Kostenkontrolle:** Durch Self‑Hosting entfallen monatliche Gebühren für cloudbasierte Automationstools, was gerade im Langzeitbetrieb kosteneffizienter ist.
+
+## 4. Konsequenzen
+- **Deployment & Betrieb:** Einrichtung und Wartung einer n8n‑Instanz (Docker‑Container, Persistenz-DB, ggf. SSL‑Proxy) muss durch das DevOps-Team erfolgen.
+- **Lernkurve:** Administratoren und Power-User müssen in die n8n-Workflow-Entwicklung eingewiesen werden.
+- **Sicherheit & Governance:** Es sind Mechanismen für Rollen‑ und Zugriffsrechte zu etablieren, um sensible Patientendaten in Automatisierungen zu schützen.
+- **Monitoring & Backup:** Workflows und Ausführungslogs müssen überwacht sowie Backups der n8n‑Datenbank und Konfigurationen regelmäßig angelegt werden.
+
+## 5. Alternativen
+- **Zapier / Make (Integromat):** Cloud‑basierte Lösungen mit großem Funktionsumfang, jedoch laufende Kosten und nicht vollständig selbst‑hostbar.
+- **Node‑RED:** Ebenfalls open source und containerfähig, aber primär für IoT‑Szenarien ausgelegt und weniger Enterprise‑ready in Sachen integrierter Authentifizierung und Governance.
+- **Eigene Node.js‑Skripte:** Volle Flexibilität, jedoch hoher Wartungsaufwand und fehlende visuelle Übersicht über Prozesse.
+- **Apache NiFi:** Mächtige Datenfluss‑Engine, jedoch komplexer Betrieb und Overhead für einfache Automatisierungen.
+
+## 6. Metadaten
+- **Betroffene Komponenten:** Automatisierung, Backend, DevOps
+- **Priorität:** Mittel (Aufbauphase der Automatisierungen)
+- **Erstellt:** 22.04.2025
+
